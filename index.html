@@ -28,41 +28,7 @@
     <div class="emergency-btn" data-bs-toggle="modal" data-bs-target="#emergencyModal">
         <i class="fas fa-bell"></i>
     </div>
-
-    <!-- Feedback Button -->
-    <div class="feedback-button" data-bs-toggle="modal" data-bs-target="#feedbackModal">
-        <i class="fas fa-comment-alt"></i>
-    </div>
-
-    <!-- Feedback Modal -->
-    <div class="modal fade feedback-modal" id="feedbackModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-star me-2"></i> Rate Your Experience</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Rating</label>
-                        <div class="rating-stars">
-                            <i class="fas fa-star" data-rating="1"></i>
-                            <i class="fas fa-star" data-rating="2"></i>
-                            <i class="fas fa-star" data-rating="3"></i>
-                            <i class="fas fa-star" data-rating="4"></i>
-                            <i class="fas fa-star" data-rating="5"></i>
-                        </div>
-                        <input type="hidden" id="selected-rating" value="0">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Your Feedback</label>
-                        <textarea class="form-control" id="feedback-comment" rows="4" placeholder="Tell us about your experience..."></textarea>
-                    </div>
-                    <button class="btn btn-primary w-100" id="submitFeedback">Submit Feedback</button>
-                </div>
-            </div>
-        </div>
-    </div>
+ 
 
 
     <!-- Emergency Modal -->
@@ -575,14 +541,15 @@
                             <a class="nav-link" href="#" id="nav-faq-link">FAQs</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i> Account
+                            <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i> Account
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" id="account-link"><i class="fas fa-user me-2"></i> My Account</a></li>
-                                <li><a class="dropdown-item" href="#" id="settings-link"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accountModal"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                <li><a class="dropdown-item" href="feedback.html"><i class="fas fa-comment me-2"></i>Feedback</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#" id="logout-btn"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                                <li><a class="dropdown-item" href="#" id="welcome-logout-btn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -666,7 +633,7 @@
                             <ul>
                                 <li><a href="#home">Home</a></li>
                                 <li><a href="#features">Features</a></li>
-                          .htm  <li><a href="#" id="footer-apps-link">Apps</a></li>
+                                 <li><a href="#" id="footer-apps-link">Apps</a></li>
                                 <li><a href="#" id="footer-faq-link-main">FAQs</a></li>
                             </ul>
                         </div>

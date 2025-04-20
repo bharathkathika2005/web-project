@@ -952,49 +952,43 @@ if (window.pageYOffset > 50) {
 }
 
 // Initialize feedback form functionality
-// Feedback form functionality
-const ratingStars = document.querySelectorAll('.rating-stars .fa-star');
-const selectedRating = document.getElementById('selected-rating');
-const feedbackComment = document.getElementById('feedback-comment');
-const submitFeedbackBtn = document.getElementById('submitFeedback');
+const ratingStars = document.querySelectorAll('.rating-stars i');
+let selectedRating = 0;
 
-// Handle star rating selection
 ratingStars.forEach(star => {
-    star.addEventListener('click', () => {
-        const rating = parseInt(star.getAttribute('data-rating'));
-        selectedRating.value = rating;
-        
-        ratingStars.forEach(s => {
-            if (parseInt(s.getAttribute('data-rating')) <= rating) {
-                s.classList.add('active');
-            } else {
-                s.classList.remove('active');
-            }
-        });
+    star.addEventListener('mouseover', function() {
+        const rating = this.getAttribute('data-rating');
+        highlightStars(rating);
     });
-    
-    star.addEventListener('mouseover', () => {
-        const rating = parseInt(star.getAttribute('data-rating'));
-        ratingStars.forEach(s => {
-            if (parseInt(s.getAttribute('data-rating')) <= rating) {
-                s.classList.add('hover');
-            } else {
-                s.classList.remove('hover');
-            }
-        });
+
+    star.addEventListener('mouseout', function() {
+        highlightStars(selectedRating);
     });
-    
-    star.addEventListener('mouseout', () => {
-        ratingStars.forEach(s => s.classList.remove('hover'));
+
+    star.addEventListener('click', function() {
+        selectedRating = this.getAttribute('data-rating');
+        document.getElementById('selected-rating').value = selectedRating;
+        highlightStars(selectedRating);
     });
 });
 
-// Handle feedback submission
-submitFeedbackBtn.addEventListener('click', async () => {
-    const rating = parseInt(selectedRating.value);
-    const comment = feedbackComment.value.trim();
+function highlightStars(rating) {
+    ratingStars.forEach(star => {
+        const starRating = star.getAttribute('data-rating');
+        if (starRating <= rating) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+}
+
+// Submit feedback
+document.getElementById('submitFeedback').addEventListener('click', async function() {
+    const rating = selectedRating.value;
+    const comment = document.getElementById('feedback-comment').value.trim();
     
-    if (rating === 0) {
+    if (rating === '0') {
         showToast('Please select a rating', 'error');
         return;
     }
@@ -1009,13 +1003,15 @@ submitFeedbackBtn.addEventListener('click', async () => {
     document.querySelector('.loading-overlay').style.opacity = '1';
     
     try {
-        const formData = new FormData();
-        formData.append('rating', rating);
-        formData.append('comment', comment);
-        
         const response = await fetch('submit_feedback.php', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                rating: parseInt(rating),
+                comment: comment
+            })
         });
         
         const data = await response.json();
@@ -1024,7 +1020,7 @@ submitFeedbackBtn.addEventListener('click', async () => {
             showToast(data.message, 'success');
             // Reset form
             selectedRating.value = '0';
-            feedbackComment.value = '';
+            document.getElementById('feedback-comment').value = '';
             ratingStars.forEach(s => s.classList.remove('active'));
             // Close modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
@@ -1034,6 +1030,7 @@ submitFeedbackBtn.addEventListener('click', async () => {
         }
     } catch (error) {
         showToast('An error occurred while submitting feedback', 'error');
+        console.error('Feedback submission error:', error);
     } finally {
         // Hide loading
         document.querySelector('.loading-overlay').style.opacity = '0';
