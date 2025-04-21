@@ -1,6 +1,5 @@
 <?php
 header('Content-Type: application/json');
-
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -11,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Get POST data
 $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-$subject = trim($_POST['subject'] ?? '');
-$message = trim($_POST['message'] ?? '');
+$subject = filter_input(INPUT_POST, 'subject', FILTER_SANITIZE_STRING);
+$message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING);
 
 // Validate input
 if (!$email) {
@@ -37,12 +36,13 @@ try {
     if ($stmt->execute([$email, $subject, $message])) {
         echo json_encode([
             'success' => true,
-            'message' => 'Your support ticket has been submitted successfully. We will get back to you soon.'
+            'message' => 'Your support message has been sent successfully! We will get back to you soon.'
         ]);
     } else {
         throw new Exception('Failed to submit support ticket');
     }
-} catch (Exception $e) {
+} catch (PDOException $e) {
+    error_log('Database error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,

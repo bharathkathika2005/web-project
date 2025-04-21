@@ -206,7 +206,7 @@ document.getElementById('login-btn').addEventListener('click', function(e) {
         formData.append('email', email);
         formData.append('password', password);
         
-        // Send login request
+        // Make actual fetch request to login.php
         fetch('login.php', {
             method: 'POST',
             body: formData
@@ -226,17 +226,17 @@ document.getElementById('login-btn').addEventListener('click', function(e) {
                 document.getElementById('auth-page').style.display = 'none';
                 document.getElementById('welcome-page').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                document.body.scrollTop = 0; // For Safari
-                document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
                 
                 // Show welcome toast
-                showToast(data.message, 'success');
+                showToast('Login successful!', 'success');
             } else {
                 showToast(data.message, 'error');
             }
         })
         .catch(error => {
-            showToast('Login failed: ' + error.message, 'error');
+            showToast('Login failed. Please try again.', 'error');
         })
         .finally(() => {
             // Hide loading
@@ -249,15 +249,13 @@ document.getElementById('login-btn').addEventListener('click', function(e) {
         showToast('Please enter both email and password', 'error');
     }
 });
-
-// Register button click
 document.getElementById('register-btn').addEventListener('click', function(e) {
     e.preventDefault();
-    // Simple validation
-    const firstName = document.querySelector('#register-form input[placeholder="First Name"]').value;
-    const lastName = document.querySelector('#register-form input[placeholder="Last Name"]').value;
+    // Get form values
+    const firstName = document.querySelector('#register-form input[name="first_name"]').value;
+    const lastName = document.querySelector('#register-form input[name="last_name"]').value;
     const email = document.querySelector('#register-form input[type="email"]').value;
-    const password = document.querySelector('#register-form input[placeholder="Create Password"]').value;
+    const password = document.querySelector('#register-form input[name="password"]').value;
     const confirmPassword = document.querySelector('#register-form input[placeholder="Confirm Password"]').value;
     const agreeTerms = document.getElementById('agreeTerms').checked;
     
@@ -287,7 +285,7 @@ document.getElementById('register-btn').addEventListener('click', function(e) {
     formData.append('email', email);
     formData.append('password', password);
     
-    // Send registration request
+    // Make actual registration request
     fetch('register.php', {
         method: 'POST',
         body: formData
@@ -303,35 +301,42 @@ document.getElementById('register-btn').addEventListener('click', function(e) {
             // Set logged in state
             localStorage.setItem('isLoggedIn', 'true');
             
-            // Hide auth page and show main content
+            // Hide auth page
             document.getElementById('auth-page').style.display = 'none';
             document.getElementById('welcome-page').style.display = 'none';
-            document.getElementById('main-content').style.display = 'none';
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
             
             // Show success message
-            showToast(data.message, 'success');
+            showToast('Registration successful!', 'success');
             
             // Show questionnaire modal
             const questionnaireModal = new bootstrap.Modal(document.getElementById('questionnaireModal'));
             questionnaireModal.show();
+            
+            // After questionnaire submission, show main content
+            document.getElementById('submitQuestionnaire').addEventListener('click', function() {
+                questionnaireModal.hide();
+                showToast('Thank you for answering our questions!', 'success');
+                setTimeout(() => {
+                    document.getElementById('main-content').style.display = 'block';
+                    document.body.scrollTop = 0;
+                    document.documentElement.scrollTop = 0;
+                }, 1000);
+            });
         } else {
             showToast(data.message, 'error');
         }
     })
     .catch(error => {
-        showToast('Registration failed: ' + error.message, 'error');
+        showToast('Registration failed. Please try again.', 'error');
     })
     .finally(() => {
         // Hide loading
         document.querySelector('.loading-overlay').style.opacity = '0';
-        setTimeout(function() {
+        setTimeout(() => {
             document.querySelector('.loading-overlay').style.display = 'none';
         }, 500);
     });
 });
-
 // Submit questionnaire
 document.getElementById('submitQuestionnaire').addEventListener('click', function() {
     const questionnaireModal = bootstrap.Modal.getInstance(document.getElementById('questionnaireModal'));
@@ -345,27 +350,27 @@ document.getElementById('submitQuestionnaire').addEventListener('click', functio
 });
 
 // Logout buttons
-document.getElementById('logout-btn').addEventListener('click', function(e) {
+document.getElementById('welcome-logout-btn')?.addEventListener('click', function(e) {
     e.preventDefault();
     logoutUser();
 });
 
-document.getElementById('apps-logout-btn').addEventListener('click', function(e) {
+document.getElementById('apps-logout-btn')?.addEventListener('click', function(e) {
     e.preventDefault();
     logoutUser();
 });
 
-document.getElementById('faq-logout-btn').addEventListener('click', function(e) {
+document.getElementById('faq-logout-btn')?.addEventListener('click', function(e) {
     e.preventDefault();
     logoutUser();
 });
 
-document.getElementById('privacy-logout-btn').addEventListener('click', function(e) {
+document.getElementById('privacy-logout-btn')?.addEventListener('click', function(e) {
     e.preventDefault();
     logoutUser();
 });
 
-document.getElementById('terms-logout-btn').addEventListener('click', function(e) {
+document.getElementById('terms-logout-btn')?.addEventListener('click', function(e) {
     e.preventDefault();
     logoutUser();
 });
@@ -377,53 +382,53 @@ document.getElementById('terms-link').addEventListener('click', function(e) {
 });
 
 // Account links - show modal instead of section
-document.getElementById('account-link').addEventListener('click', function(e) {
+document.getElementById('account-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showAccountModal();
 });
 
-document.getElementById('apps-account-link').addEventListener('click', function(e) {
+document.getElementById('apps-account-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showAccountModal();
 });
 
-document.getElementById('faq-account-link').addEventListener('click', function(e) {
+document.getElementById('faq-account-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showAccountModal();
 });
 
-document.getElementById('privacy-account-link').addEventListener('click', function(e) {
+document.getElementById('privacy-account-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showAccountModal();
 });
 
-document.getElementById('terms-account-link').addEventListener('click', function(e) {
+document.getElementById('terms-account-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showAccountModal();
 });
 
 // Settings links - show modal instead of section
-document.getElementById('settings-link').addEventListener('click', function(e) {
+document.getElementById('settings-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showSettingsModal();
 });
 
-document.getElementById('apps-settings-link').addEventListener('click', function(e) {
+document.getElementById('apps-settings-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showSettingsModal();
 });
 
-document.getElementById('faq-settings-link').addEventListener('click', function(e) {
+document.getElementById('faq-settings-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showSettingsModal();
 });
 
-document.getElementById('privacy-settings-link').addEventListener('click', function(e) {
+document.getElementById('privacy-settings-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showSettingsModal();
 });
 
-document.getElementById('terms-settings-link').addEventListener('click', function(e) {
+document.getElementById('terms-settings-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     showSettingsModal();
 });
@@ -455,7 +460,7 @@ document.getElementById('modal-save-settings-btn').addEventListener('click', fun
     } else if (theme === 'light') {
         document.body.classList.remove('dark-mode');
     } else {
-        // System default - you could implement prefers-color-scheme detection here
+        // System default
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.body.classList.add('dark-mode');
         } else {
@@ -482,10 +487,16 @@ document.getElementById('confirmEmergency').addEventListener('click', function()
             return;
         }
         
+        // Show loading
+        document.querySelector('.loading-overlay').style.display = 'flex';
+        document.querySelector('.loading-overlay').style.opacity = '1';
+
+        // Create form data
         const formData = new FormData();
         formData.append('latitude', position.coords.latitude);
         formData.append('longitude', position.coords.longitude);
 
+        // Make actual fetch request to emergency_alert.php
         fetch('emergency_alert.php', {
             method: 'POST',
             body: formData
@@ -493,19 +504,28 @@ document.getElementById('confirmEmergency').addEventListener('click', function()
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showToast('Emergency alert sent successfully', 'success');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('emergencyModal'));
-                modal.hide();
+                showToast('Emergency alert sent successfully with your location: ' + 
+                         position.coords.latitude + ', ' + position.coords.longitude, 'success');
             } else {
                 showToast(data.message, 'error');
             }
         })
         .catch(error => {
-            showToast('Failed to send emergency alert', 'error');
+            showToast('Failed to send emergency alert. Please try again.', 'error');
+        })
+        .finally(() => {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('emergencyModal'));
+            modal.hide();
+            
+            // Hide loading
+            document.querySelector('.loading-overlay').style.opacity = '0';
+            setTimeout(function() {
+                document.querySelector('.loading-overlay').style.display = 'none';
+            }, 500);
         });
     }, function() {
         showToast('Unable to get your location', 'error');
-    })
+    });
 });
 
 // Support message button
@@ -513,6 +533,11 @@ document.getElementById('sendSupportMessage').addEventListener('click', function
     const email = document.querySelector('#supportModal input[type="email"]').value;
     const subject = document.querySelector('#supportModal select').value;
     const message = document.querySelector('#supportModal textarea').value;
+
+    if (!email || !message) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
 
     // Show loading
     document.querySelector('.loading-overlay').style.display = 'flex';
@@ -524,7 +549,7 @@ document.getElementById('sendSupportMessage').addEventListener('click', function
     formData.append('subject', subject);
     formData.append('message', message);
 
-    // Send support ticket request
+    // Make actual fetch request to submit_support.php
     fetch('submit_support.php', {
         method: 'POST',
         body: formData
@@ -535,6 +560,7 @@ document.getElementById('sendSupportMessage').addEventListener('click', function
             showToast(data.message, 'success');
             const modal = bootstrap.Modal.getInstance(document.getElementById('supportModal'));
             modal.hide();
+            
             // Clear form
             document.querySelector('#supportModal input[type="email"]').value = '';
             document.querySelector('#supportModal textarea').value = '';
@@ -543,7 +569,7 @@ document.getElementById('sendSupportMessage').addEventListener('click', function
         }
     })
     .catch(error => {
-        showToast('Failed to submit support ticket. Please try again later.', 'error');
+        showToast('Failed to send support message. Please try again.', 'error');
     })
     .finally(() => {
         // Hide loading
@@ -554,7 +580,7 @@ document.getElementById('sendSupportMessage').addEventListener('click', function
     });
 });
 
-// Feature learn more buttons
+// Feature learn more buttons - Show content in modal
 document.querySelectorAll('.feature-learn-more').forEach(button => {
     button.addEventListener('click', function(e) {
         e.preventDefault();
@@ -566,327 +592,192 @@ document.querySelectorAll('.feature-learn-more').forEach(button => {
             document.getElementById('featureModalBody').innerHTML = details.content;
             const featureModal = new bootstrap.Modal(document.getElementById('featureModal'));
             featureModal.show();
-        }
-    });
-});
-
-// Navigation links - Fixed Home button
-document.querySelectorAll('[href="#home"]').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (isLoggedIn()) {
-            showMainContent();
         } else {
-            showAuthPage();
-            showToast('Please log in to access the main content', 'warning');
+            showToast('Feature details not found', 'error');
         }
     });
 });
 
-// View Apps button in main content
-document.getElementById('main-apps-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    if (isLoggedIn()) {
-        showAppsPage();
-    } else {
-        showAuthPage();
-        showToast('Please log in to access the apps', 'warning');
-    }
-});
-
-// Apps navigation in main nav - FIXED
-document.getElementById('nav-apps-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    if (isLoggedIn()) {
-        showAppsPage();
-    } else {
-        showAuthPage();
-        showToast('Please log in to access the apps', 'warning');
-    }
-});
-
-// Footer Apps link in main content - FIXED
-document.getElementById('footer-apps-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    if (isLoggedIn()) {
-        showAppsPage();
-    } else {
-        showAuthPage();
-        showToast('Please log in to access the apps', 'warning');
-    }
-});
-
-// FAQ links
-document.querySelectorAll('[id*="faq-link"]').forEach(link => {
-    link.addEventListener('click', function(e) {
+// Initialize navigation links
+function setupNavigationLinks() {
+    // Apps links
+    document.getElementById('nav-apps-link')?.addEventListener('click', function(e) {
         e.preventDefault();
-        if (isLoggedIn()) {
-            showFaqPage();
-        } else {
-            showAuthPage();
-            showToast('Please log in to access the FAQs', 'warning');
-        }
+        showAppsPage();
     });
-});
 
-// Terms links
-document.querySelectorAll('[id*="terms-link"]').forEach(link => {
-    link.addEventListener('click', function(e) {
+    document.getElementById('main-apps-link')?.addEventListener('click', function(e) {
         e.preventDefault();
-        showTermsPage();
+        showAppsPage();
     });
-});
 
-// Privacy links
-document.querySelectorAll('[id*="privacy-link"]').forEach(link => {
-    link.addEventListener('click', function(e) {
+    document.getElementById('footer-apps-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showAppsPage();
+    });
+
+    document.getElementById('apps-home-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showMainContent();
+    });
+
+    document.getElementById('apps-features-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showMainContent();
+        setTimeout(function() {
+            document.querySelector('a[href="#features"]').click();
+        }, 100);
+    });
+
+    document.getElementById('apps-faq-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showFaqPage();
+    });
+
+    // FAQ links
+    document.getElementById('nav-faq-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showFaqPage();
+    });
+
+    document.getElementById('footer-faq-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showFaqPage();
+    });
+
+    document.getElementById('footer-faq-link-main')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showFaqPage();
+    });
+
+    document.getElementById('faq-home-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showMainContent();
+    });
+
+    document.getElementById('faq-features-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showMainContent();
+        setTimeout(function() {
+            document.querySelector('a[href="#features"]').click();
+        }, 100);
+    });
+
+    document.getElementById('faq-apps-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showAppsPage();
+    });
+
+    // Privacy links
+    document.getElementById('footer-privacy-link')?.addEventListener('click', function(e) {
         e.preventDefault();
         showPrivacyPage();
     });
-});
 
-// Apps page navigation links
-document.getElementById('apps-home-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-});
+    document.getElementById('footer-privacy-link-main')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPrivacyPage();
+    });
 
-document.getElementById('apps-features-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-    setTimeout(function() {
-        document.querySelector('a[href="#features"]').click();
-    }, 100);
-});
+    document.getElementById('privacy-home-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showMainContent();
+    });
 
-document.getElementById('apps-faq-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showFaqPage();
-});
+    document.getElementById('privacy-features-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showMainContent();
+        setTimeout(function() {
+            document.querySelector('a[href="#features"]').click();
+        }, 100);
+    });
 
-// FAQ page navigation links
-document.getElementById('faq-home-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-});
+    document.getElementById('privacy-apps-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showAppsPage();
+    });
 
-document.getElementById('faq-features-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-    setTimeout(function() {
-        document.querySelector('a[href="#features"]').click();
-    }, 100);
-});
-
-document.getElementById('faq-apps-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAppsPage();
-});
-
-// Privacy page navigation links
-document.getElementById('privacy-home-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-});
-
-document.getElementById('privacy-features-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-    setTimeout(function() {
-        document.querySelector('a[href="#features"]').click();
-    }, 100);
-});
-
-document.getElementById('privacy-apps-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAppsPage();
-});
-
-document.getElementById('privacy-faq-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showFaqPage();
-});
-
-// Terms page navigation links
-document.getElementById('terms-home-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-});
-
-document.getElementById('terms-features-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-    setTimeout(function() {
-        document.querySelector('a[href="#features"]').click();
-    }, 100);
-});
-
-document.getElementById('terms-apps-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAppsPage();
-});
-
-document.getElementById('terms-faq-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showFaqPage();
-});
-
-// Footer links
-document.getElementById('footer-faq-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    if (!isLoggedIn()) {
-        showToast('Please login to access this page', 'error');
-        showAuthPage();
-    } else {
+    document.getElementById('privacy-faq-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
         showFaqPage();
-    }
-});
+    });
 
-document.getElementById('footer-privacy-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showPrivacyPage();
-});
+    // Terms links
+    document.getElementById('footer-terms-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showTermsPage();
+    });
 
-document.getElementById('footer-terms-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showTermsPage();
-});
+    document.getElementById('footer-terms-link-main')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showTermsPage();
+    });
 
-// Main content footer links
-document.getElementById('footer-faq-link-main').addEventListener('click', function(e) {
-    e.preventDefault();
-    showFaqPage();
-});
+    document.getElementById('terms-home-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showMainContent();
+    });
 
-document.getElementById('footer-privacy-link-main').addEventListener('click', function(e) {
-    e.preventDefault();
-    showPrivacyPage();
-});
+    document.getElementById('terms-features-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showMainContent();
+        setTimeout(function() {
+            document.querySelector('a[href="#features"]').click();
+        }, 100);
+    });
 
-document.getElementById('footer-terms-link-main').addEventListener('click', function(e) {
-    e.preventDefault();
-    showTermsPage();
-});
+    document.getElementById('terms-apps-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showAppsPage();
+    });
 
-// Apps page footer links
-document.getElementById('apps-footer-faq-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showFaqPage();
-});
+    document.getElementById('terms-faq-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showFaqPage();
+    });
 
-document.getElementById('apps-footer-privacy-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showPrivacyPage();
-});
+    // Apps page footer links
+    document.getElementById('apps-footer-faq-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showFaqPage();
+    });
 
-document.getElementById('apps-footer-terms-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showTermsPage();
-});
+    document.getElementById('apps-footer-privacy-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPrivacyPage();
+    });
 
-// FAQ page footer links
-document.getElementById('faq-footer-privacy-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showPrivacyPage();
-});
+    document.getElementById('apps-footer-terms-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showTermsPage();
+    });
 
-document.getElementById('faq-footer-terms-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showTermsPage();
-});
+    // FAQ page footer links
+    document.getElementById('faq-footer-privacy-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPrivacyPage();
+    });
 
-// Privacy page footer links
-document.getElementById('privacy-footer-terms-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showTermsPage();
-});
+    document.getElementById('faq-footer-terms-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showTermsPage();
+    });
 
-// Terms page footer links
-document.getElementById('terms-footer-privacy-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showPrivacyPage();
-});
+    // Privacy page footer links
+    document.getElementById('privacy-footer-terms-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showTermsPage();
+    });
 
-// Apps page footer home/features links
-document.getElementById('apps-footer-home-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-});
+    // Terms page footer links
+    document.getElementById('terms-footer-privacy-link')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPrivacyPage();
+    });
+}
 
-document.getElementById('apps-footer-features-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-    setTimeout(function() {
-        document.querySelector('a[href="#features"]').click();
-    }, 100);
-});
-
-// FAQ page footer home/features links
-document.getElementById('faq-footer-home-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-});
-
-document.getElementById('faq-footer-features-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-    setTimeout(function() {
-        document.querySelector('a[href="#features"]').click();
-    }, 100);
-});
-
-document.getElementById('faq-footer-apps-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAppsPage();
-});
-
-// Privacy page footer home/features links
-document.getElementById('privacy-footer-home-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-});
-
-document.getElementById('privacy-footer-features-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-    setTimeout(function() {
-        document.querySelector('a[href="#features"]').click();
-    }, 100);
-});
-
-document.getElementById('privacy-footer-apps-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAppsPage();
-});
-
-document.getElementById('privacy-footer-faq-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showFaqPage();
-});
-
-// Terms page footer home/features links
-document.getElementById('terms-footer-home-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-});
-
-document.getElementById('terms-footer-features-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showMainContent();
-    setTimeout(function() {
-        document.querySelector('a[href="#features"]').click();
-    }, 100);
-});
-
-document.getElementById('terms-footer-apps-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAppsPage();
-});
-
-document.getElementById('terms-footer-faq-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    showFaqPage();
-});
+// Call the navigation setup function
+setupNavigationLinks();
 
 // Smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -982,105 +873,6 @@ function highlightStars(rating) {
         }
     });
 }
-
-// Submit feedback
-document.getElementById('submitFeedback').addEventListener('click', async function() {
-    const rating = selectedRating.value;
-    const comment = document.getElementById('feedback-comment').value.trim();
-    
-    if (rating === '0') {
-        showToast('Please select a rating', 'error');
-        return;
-    }
-    
-    if (!comment) {
-        showToast('Please provide your feedback', 'error');
-        return;
-    }
-    
-    // Show loading
-    document.querySelector('.loading-overlay').style.display = 'flex';
-    document.querySelector('.loading-overlay').style.opacity = '1';
-    
-    try {
-        const response = await fetch('submit_feedback.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                rating: parseInt(rating),
-                comment: comment
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            showToast(data.message, 'success');
-            // Reset form
-            selectedRating.value = '0';
-            document.getElementById('feedback-comment').value = '';
-            ratingStars.forEach(s => s.classList.remove('active'));
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
-            modal.hide();
-        } else {
-            showToast(data.message || 'Failed to submit feedback', 'error');
-        }
-    } catch (error) {
-        showToast('An error occurred while submitting feedback', 'error');
-        console.error('Feedback submission error:', error);
-    } finally {
-        // Hide loading
-        document.querySelector('.loading-overlay').style.opacity = '0';
-        setTimeout(() => {
-            document.querySelector('.loading-overlay').style.display = 'none';
-        }, 500);
-    }
-});
-
-// Feedback button functionality
-const feedbackButton = document.querySelector('.feedback-button');
-const feedbackModal = document.querySelector('.feedback-modal');
-
-feedbackButton.addEventListener('click', function(e) {
-    e.stopPropagation(); // Prevent the click from bubbling up
-    feedbackModal.classList.toggle('show');
-});
-
-// Close feedback modal when clicking outside
-document.addEventListener('click', function(e) {
-    if (!feedbackModal.contains(e.target) && e.target !== feedbackButton) {
-        feedbackModal.classList.remove('show');
-    }
-});
-
-// Prevent clicks inside the modal from closing it
-feedbackModal.addEventListener('click', function(e) {
-    e.stopPropagation();
-});
-
-// Submit feedback
-feedbackModal.querySelector('button').addEventListener('click', function() {
-    const feedbackText = feedbackModal.querySelector('textarea').value;
-    const wantsContact = feedbackModal.querySelector('#feedbackContact').checked;
-    
-    if (feedbackText.trim() !== '') {
-        // Here you would normally send the feedback to your server
-        console.log('Feedback submitted:', {
-            text: feedbackText,
-            contact: wantsContact
-        });
-        
-        showToast('Thank you for your feedback!', 'success');
-        feedbackModal.querySelector('textarea').value = '';
-        feedbackModal.querySelector('#feedbackContact').checked = false;
-        feedbackModal.classList.remove('show');
-    } else {
-        showToast('Please enter your feedback', 'error');
-    }
-});
 
 // Helper functions
 function showAuthPage() {

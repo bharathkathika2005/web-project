@@ -1,5 +1,3 @@
--- Combined Database Schema for HerVerse Application
-
 -- Create main application database
 CREATE DATABASE IF NOT EXISTS herverse_app;
 USE herverse_app;
